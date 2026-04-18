@@ -1,7 +1,6 @@
 'use strict';
 
 const multer = require('multer');
-const sharp = require('sharp');
 const path = require('path');
 const fs = require('fs');
 const { v4: uuidv4 } = require('uuid');
@@ -22,6 +21,7 @@ const upload = multer({
 });
 
 async function processAndSaveProductImage(buffer) {
+  const sharp = require('sharp');
   const id = uuidv4();
   const relDir = path.join(PRODUCTS_SUB);
   const dir = path.join(UPLOAD_DIR, relDir);
