@@ -9,7 +9,7 @@
     "import": "node scripts/import-products.js"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": "20.x"
   },
   "dependencies": {
     "archiver": "^6.0.2",
