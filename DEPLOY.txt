@@ -1,0 +1,69 @@
+================================================================================
+MASAARNA SUPERMARKET — FREE HOSTING (NO PAYMENT)
+================================================================================
+
+This folder is ready to deploy: backend/ (Node + Express + SQLite) and
+frontend/ (static files served by the same app). Upload the whole "update"
+folder, or push it to Git and connect a host that runs Node.js 18+.
+
+--------------------------------------------------------------------------------
+A) FREE "DOMAIN" (NO PURCHASE)
+--------------------------------------------------------------------------------
+These are free subdomains included with the host (you do not buy a .com):
+  • Render  → https://YOUR-SERVICE.onrender.com
+  • Vercel  → https://YOUR-PROJECT.vercel.app   (needs adapter for this repo)
+  • Netlify → https://YOUR-SITE.netlify.app    (static only unless you refactor)
+  • Cloudflare Pages → https://YOUR-PROJECT.pages.dev
+  • Fly.io  → https://YOUR-APP.fly.dev
+
+For THIS project (single Node server + API + SQLite), the simplest fit is:
+  **Render (free web service)** or **Fly.io** with a Node process.
+
+Truly free custom DNS names (rare, with limits): eu.org, FreeDNS — manual
+signup; most people use the free subdomain above.
+
+--------------------------------------------------------------------------------
+B) RECOMMENDED: RENDER (FREE TIER)
+--------------------------------------------------------------------------------
+1. Create a GitHub repository and upload ONLY the contents of this "update"
+   folder as the repo root (so the repo has backend/ and frontend/).
+2. Sign up at https://render.com (free tier, no card required for basic use
+   — confirm current Render policy on their site).
+3. New → Blueprint → connect the repo, or New → Web Service → connect repo.
+4. Settings:
+     Root Directory: backend
+     Build Command:  npm ci
+     Start Command:  npm start
+     Environment:    Node
+5. Environment variables (Dashboard → Environment):
+     NODE_ENV=production
+     JWT_SECRET=<long random string>
+     PUBLIC_BASE_URL=https://YOUR-SERVICE.onrender.com
+     (No trailing slash. Must match the URL customers use.)
+
+6. Deploy. Your free URL will look like:
+     https://masaarna-supermarket.onrender.com
+   (actual name depends on what you set in render.yaml / dashboard.)
+
+FREE TIER NOTES (Render):
+  • Service may sleep after idle time; first request can be slow to wake.
+  • Filesystem is EPHEMERAL: SQLite DB and uploaded images can be LOST on
+    redeploy or restart. For production data, plan a managed DB / object
+    storage later; for demos this is often acceptable.
+
+--------------------------------------------------------------------------------
+C) MANUAL ZIP UPLOAD
+--------------------------------------------------------------------------------
+Many cheap "unlimited hosting" panels only support PHP, not Node. You need
+a host that runs Node.js 18+. If your provider offers "Node.js" app:
+  • Upload this folder structure unchanged.
+  • Set start command: node server.js with working directory: backend
+  • Set PORT from the host (Render/Fly set PORT automatically).
+
+--------------------------------------------------------------------------------
+D) PAYMENTS (N-GENIUS)
+--------------------------------------------------------------------------------
+Add your real API keys in the dashboard as in backend/.env.example.
+PUBLIC_BASE_URL must match your live HTTPS URL for payment redirects.
+
+================================================================================

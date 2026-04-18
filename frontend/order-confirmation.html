@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Order confirmed · Masaarna</title>
+    <link rel="icon" href="/assets/brand/logo.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/css/brand.css" />
+    <link rel="stylesheet" href="/css/main.css" />
+  </head>
+  <body>
+    <header class="page-header">
+      <div class="page-header__inner">
+        <a class="page-header__logo brand-display" href="/" style="display: flex; align-items: center; gap: 0.5rem">
+          <img src="/assets/brand/logo.svg" width="32" height="32" alt="" style="border-radius: 50%" />
+          Masaarna<span>.</span>
+        </a>
+        <nav class="page-header__nav">
+          <a href="/">Back to shop</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="checkout-page">
+      <div class="panel success-panel">
+        <div style="font-size: 3rem; margin-bottom: 0.5rem" aria-hidden="true">✓</div>
+        <h1>Order confirmed</h1>
+        <p class="muted" id="order-msg" style="font-size: 1.05rem; max-width: 28rem; margin-left: auto; margin-right: auto">
+          Loading order…
+        </p>
+        <p style="margin-top: 1.5rem">
+          <a class="btn btn--primary" href="/" style="text-decoration: none">Continue shopping</a>
+        </p>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="site-footer__bottom" style="border-top: none">Thank you for shopping with Masaarna</div>
+    </footer>
+
+    <script src="/js/cart.js"></script>
+    <script>
+      (function () {
+        const params = new URLSearchParams(window.location.search);
+        const orderNumber = params.get('order');
+        const methodHint = params.get('method') || '';
+        const msg = document.getElementById('order-msg');
+        if (!orderNumber) {
+          msg.textContent = 'No order reference in the URL.';
+          return;
+        }
+        fetch('/api/orders/' + encodeURIComponent(orderNumber))
+          .then((r) => r.json())
+          .then((data) => {
+            if (data.error) {
+              msg.textContent = data.error;
+              return;
+            }
+            if (window.MasaarnaCart) window.MasaarnaCart.clear();
+            const isCard = data.payment_method === 'card' || methodHint === 'card';
+            const payLine = isCard
+              ? 'Payment: card (Network International).'
+              : 'Payment: cash on delivery when your order arrives.';
+            msg.innerHTML =
+              'Your order <strong>' +
+              orderNumber +
+              '</strong> is confirmed. Total <strong>AED ' +
+              Number(data.total).toFixed(2) +
+              '</strong>. ' +
+              payLine +
+              ' We’ll send updates to your email.';
+          })
+          .catch(() => {
+            msg.textContent = 'Could not load order details.';
+          });
+      })();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,26 @@
+# Rename "app" if Fly says the name is taken. Deploy from this folder (backend + frontend).
+app = "masaarna-supermarket"
+primary_region = "fra"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ["app"]
+
+[[http_service.checks]]
+  grace_period = "15s"
+  interval = "30s"
+  method = "GET"
+  timeout = "5s"
+  path = "/api/health"
+
+[[vm]]
+  memory = "256mb"
+  cpus = 1
+  cpu_kind = "shared"

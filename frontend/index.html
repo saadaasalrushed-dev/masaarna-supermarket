@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title data-site-name>Masaarna Supermarket</title>
+    <link rel="icon" href="/assets/brand/logo.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/css/brand.css" />
+    <link rel="stylesheet" href="/css/main.css" />
+  </head>
+  <body>
+    <div class="topbar">
+      <div class="topbar__inner">
+        <div class="topbar__loc">
+          <span aria-hidden="true">📍</span>
+          <span>Deliver to <strong>UAE</strong></span>
+        </div>
+        <div class="topbar__links">
+          <a href="https://masaarnasupermarket.ae" rel="noopener" target="_blank">masaarnasupermarket.ae</a>
+          <a href="/admin.html">Admin</a>
+        </div>
+      </div>
+    </div>
+
+    <header class="header">
+      <div class="header__inner">
+        <a class="header__logo" href="/">
+          <img
+            class="brand-header-logo"
+            data-site-logo
+            src="/assets/brand/logo.svg"
+            width="48"
+            height="48"
+            alt="Masaarna"
+          />
+          <span class="brand-text"><span data-site-name>Masaarna</span><span>.</span></span>
+        </a>
+        <div class="header__search-wrap">
+          <div class="header__search" role="search">
+            <label class="visually-hidden" for="search-q">Search products</label>
+            <input
+              type="search"
+              id="search-q"
+              placeholder="Search groceries, snacks, dairy, household…"
+              autocomplete="off"
+            />
+            <button type="button" class="header__search-btn" id="search-submit" aria-label="Search">Search</button>
+          </div>
+        </div>
+        <div class="header__actions">
+          <a class="header__link" href="/">Home</a>
+          <a class="header__cart" href="/checkout.html">
+            <span aria-hidden="true">🛒</span>
+            Cart
+            <span class="header__cart-count" id="cart-count" aria-live="polite"></span>
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div class="hero__inner">
+        <p class="hero__eyebrow" data-site-tagline>Trust & Heritage</p>
+        <h1 class="brand-display">Groceries you trust, delivered with care</h1>
+        <p>
+          Fresh produce, pantry staples, and household essentials — the same quality you expect from Masaarna Super
+          Market.
+        </p>
+        <div class="hero__chips">
+          <span class="hero__chip">Cash on delivery</span>
+          <span class="hero__chip">Real-time stock</span>
+          <span class="hero__chip">Secure checkout</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="promo-carousel-wrap" aria-label="Promotions">
+      <div class="promo-carousel" id="promo-carousel-root">
+        <div class="promo-carousel__viewport" id="promo-viewport">
+          <div class="promo-carousel__track" id="promo-track"></div>
+        </div>
+        <button type="button" class="promo-carousel__nav promo-carousel__nav--prev" aria-label="Previous slide">
+          ‹
+        </button>
+        <button type="button" class="promo-carousel__nav promo-carousel__nav--next" aria-label="Next slide">›</button>
+        <div class="promo-carousel__dots" id="promo-dots" role="tablist" aria-label="Slides"></div>
+      </div>
+    </section>
+
+    <section class="featured-strip" id="featured-section" hidden>
+      <div class="featured-strip__head">
+        <h2 class="brand-display">Featured picks</h2>
+        <p class="muted">Swipe horizontally on touch devices</p>
+      </div>
+      <div class="featured-scroll" id="featured-scroll"></div>
+    </section>
+
+    <div class="trust">
+      <div class="trust__inner">
+        <div class="trust__item"><strong>✓</strong> Quality-checked range</div>
+        <div class="trust__item"><strong>✓</strong> Heritage &amp; trust</div>
+        <div class="trust__item"><strong>✓</strong> Order tracking ready</div>
+        <div class="trust__item"><strong>✓</strong> UAE delivery</div>
+      </div>
+    </div>
+
+    <section class="category-nav" aria-labelledby="category-nav-heading">
+      <div class="category-nav__inner">
+        <h2 id="category-nav-heading" class="category-nav__title brand-display">Shop by category</h2>
+        <p class="category-nav__subtitle muted">Tap a category — counts update from your catalog</p>
+        <div class="category-nav__grid" id="category-nav-grid"></div>
+      </div>
+    </section>
+
+    <main class="page" id="shop">
+      <div class="layout layout--shop">
+        <div>
+          <div class="section-head">
+            <h2 class="brand-display">Products</h2>
+            <p>Filter by chip or refine with search</p>
+          </div>
+          <div class="filters" id="category-filters"></div>
+          <div class="product-grid" id="product-grid"></div>
+        </div>
+
+        <aside class="cart-panel" id="cart-panel">
+          <h2>Your basket</h2>
+          <div class="cart-lines" id="cart-lines"></div>
+          <div class="cart-panel__total">
+            <span>Subtotal</span>
+            <span id="cart-subtotal">AED 0.00</span>
+          </div>
+          <a
+            class="btn btn--primary is-disabled"
+            id="link-checkout"
+            href="/checkout.html"
+            style="width: 100%; margin-top: 1rem; text-decoration: none"
+            aria-disabled="true"
+            >Proceed to checkout</a
+          >
+        </aside>
+      </div>
+    </main>
+
+    <button type="button" class="scroll-top" id="scroll-top" aria-label="Back to top">↑</button>
+
+    <footer class="site-footer">
+      <div class="site-footer__inner">
+        <div>
+          <div class="footer-brand">
+            <img class="footer-brand__logo" data-site-logo src="/assets/brand/logo.svg" alt="" width="56" height="56" />
+            <div>
+              <p class="footer-brand__title" data-site-name>Masaarna Supermarket</p>
+              <p class="muted" style="margin: 0; color: #94a3b8; font-size: 0.8rem" data-site-tagline>
+                Trust & Heritage
+              </p>
+            </div>
+          </div>
+        </div>
+        <div>
+          <h3>Shop</h3>
+          <ul>
+            <li><a href="/">All products</a></li>
+            <li><a href="/checkout.html">Basket</a></li>
+            <li><a href="/admin.html">Admin</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Connect</h3>
+          <div class="footer-social-wrap">
+            <a id="social-whatsapp" href="#" target="_blank" rel="noopener">WhatsApp</a>
+            <a id="social-instagram" href="#" target="_blank" rel="noopener">Instagram</a>
+            <a id="social-tiktok" href="#" target="_blank" rel="noopener">TikTok</a>
+            <a id="social-google-review" href="#" target="_blank" rel="noopener">Google review</a>
+            <a id="social-facebook" href="#" target="_blank" rel="noopener" style="display: none">Facebook</a>
+          </div>
+          <p class="footer-qr">
+            <img
+              src="/assets/qr/qr-code.png"
+              width="88"
+              height="88"
+              alt="Scan for Masaarna"
+              loading="lazy"
+              decoding="async"
+            />
+          </p>
+        </div>
+        <div>
+          <h3>Visit</h3>
+          <p id="contact-phone-line" class="muted" style="margin: 0 0 0.35rem; color: #cbd5e1">
+            <span id="contact-phone"></span>
+          </p>
+          <p id="contact-email-line" class="muted" style="margin: 0 0 0.75rem">
+            <a id="contact-email" href="#" style="color: #cbd5e1"></a>
+          </p>
+          <a id="map-open-link" href="#" target="_blank" rel="noopener" style="font-size: 0.875rem">Open in Google Maps</a>
+          <div class="site-map-wrap" id="site-map-wrap" style="margin-top: 0.75rem">
+            <iframe id="site-map-iframe" title="Store location" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+          </div>
+        </div>
+      </div>
+      <div class="site-footer__bottom"><span data-site-name>Masaarna Supermarket</span> · <span data-site-tagline>Trust & Heritage</span></div>
+    </footer>
+
+    <div class="modal" id="quick-view" hidden role="dialog" aria-modal="true" aria-labelledby="qv-title">
+      <div class="modal__backdrop" data-close="1"></div>
+      <div class="modal__panel">
+        <button type="button" class="modal__close" data-close="1" aria-label="Close">×</button>
+        <div class="qv-carousel">
+          <div class="qv-carousel__viewport" id="qv-viewport">
+            <div class="qv-carousel__track" id="qv-track"></div>
+          </div>
+          <div class="qv-carousel__dots" id="qv-dots"></div>
+          <p class="muted qv-carousel__hint">Swipe images</p>
+        </div>
+        <div class="modal__body">
+          <h2 id="qv-title" class="modal__title"></h2>
+          <p id="qv-meta" class="modal__meta muted"></p>
+          <p id="qv-price" class="modal__price"></p>
+          <button type="button" class="btn btn--primary" id="qv-add" style="width: 100%; margin-top: 0.75rem">Add to basket</button>
+        </div>
+      </div>
+    </div>
+
+    <nav class="mobile-tabbar" id="mobile-tabbar" aria-label="Quick links">
+      <a class="mobile-tabbar__btn" href="/">
+        <span class="mobile-tabbar__ico" aria-hidden="true">🏠</span>
+        <span class="mobile-tabbar__label">Home</span>
+      </a>
+      <button type="button" class="mobile-tabbar__btn" id="mobile-tab-search" aria-haspopup="dialog" aria-controls="mobile-search-sheet">
+        <span class="mobile-tabbar__ico" aria-hidden="true">🔍</span>
+        <span class="mobile-tabbar__label">Search</span>
+      </button>
+      <button type="button" class="mobile-tabbar__btn" id="mobile-tab-categories" aria-haspopup="dialog" aria-expanded="false" aria-controls="mobile-category-sheet">
+        <span class="mobile-tabbar__ico" aria-hidden="true">☰</span>
+        <span class="mobile-tabbar__label">Categories</span>
+      </button>
+      <a class="mobile-tabbar__btn" href="#" id="mobile-nav-whatsapp" target="_blank" rel="noopener noreferrer">
+        <span class="mobile-tabbar__ico mobile-tabbar__ico--wa" aria-hidden="true"></span>
+        <span class="mobile-tabbar__label">WhatsApp</span>
+      </a>
+      <a class="mobile-tabbar__btn mobile-tabbar__btn--cart" href="/checkout.html" id="mobile-tab-checkout">
+        <span class="mobile-tabbar__ico" aria-hidden="true">🛒</span>
+        <span class="mobile-tabbar__label">Basket</span>
+        <span class="mobile-tabbar__badge" id="mobile-tabbar-cart-count" hidden>0</span>
+      </a>
+    </nav>
+
+    <div class="mobile-sheet" id="mobile-search-sheet" hidden>
+      <div class="mobile-sheet__backdrop" data-mobile-search-backdrop tabindex="-1"></div>
+      <div
+        class="mobile-sheet__panel mobile-sheet__panel--search"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="mobile-search-title"
+      >
+        <header class="mobile-sheet__header">
+          <h2 id="mobile-search-title" class="mobile-sheet__title">Search products</h2>
+          <button type="button" class="mobile-sheet__close" id="mobile-search-close" aria-label="Close search">×</button>
+        </header>
+        <div class="mobile-search-sheet__body">
+          <div class="mobile-search-sheet__field header__search" role="search">
+            <label class="visually-hidden" for="search-q-sheet">Search products</label>
+            <input
+              type="search"
+              id="search-q-sheet"
+              placeholder="Search groceries, snacks, dairy, household…"
+              autocomplete="off"
+            />
+            <button type="button" class="header__search-btn" id="search-submit-sheet">Search</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mobile-sheet" id="mobile-category-sheet" hidden>
+      <div class="mobile-sheet__backdrop" tabindex="-1"></div>
+      <div
+        class="mobile-sheet__panel"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="mobile-cat-title"
+      >
+        <header class="mobile-sheet__header">
+          <h2 id="mobile-cat-title" class="mobile-sheet__title">Shop by category</h2>
+          <button type="button" class="mobile-sheet__close" id="mobile-sheet-close" aria-label="Close categories">×</button>
+        </header>
+        <div class="mobile-sheet__list" id="mobile-category-list"></div>
+      </div>
+    </div>
+
+    <script src="/js/site.js"></script>
+    <script src="/js/cart.js"></script>
+    <script src="/js/mobile-tabbar.js"></script>
+    <script src="/js/main.js"></script>
+  </body>
+</html>

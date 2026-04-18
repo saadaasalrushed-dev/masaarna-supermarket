@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Checkout · Masaarna</title>
+    <link rel="icon" href="/assets/brand/logo.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/css/brand.css" />
+    <link rel="stylesheet" href="/css/main.css" />
+  </head>
+  <body>
+    <header class="page-header">
+      <div class="page-header__inner">
+        <a class="page-header__logo brand-display" href="/" style="display: flex; align-items: center; gap: 0.5rem">
+          <img src="/assets/brand/logo.svg" width="32" height="32" alt="" style="border-radius: 50%" />
+          Masaarna<span>.</span>
+        </a>
+        <nav class="page-header__nav">
+          <a href="/">Continue shopping</a>
+          <a href="/checkout.html">Basket</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="checkout-page checkout-page--wide">
+      <div class="section-head">
+        <h2 style="margin: 0; font-size: 1.5rem; font-weight: 800">Checkout</h2>
+        <p>Review your order · Cash on delivery or card (Network International / nGenius)</p>
+      </div>
+
+      <div class="layout" style="gap: 1.25rem">
+        <div class="panel">
+          <h2>Order summary</h2>
+          <div id="checkout-lines"></div>
+          <div class="row-between" style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border)">
+            <span class="muted">Subtotal</span>
+            <span id="checkout-subtotal" style="font-weight: 700">AED 0.00</span>
+          </div>
+          <p class="muted" style="margin: 0.75rem 0 0">Use promo <strong>MASAARNA10</strong> for 10% off your basket.</p>
+          <div class="row-between" style="margin-top: 0.75rem; font-size: 1.15rem; font-weight: 800">
+            <span>Total</span>
+            <span id="checkout-total">AED 0.00</span>
+          </div>
+        </div>
+
+        <form class="panel" id="checkout-form">
+          <h2>Delivery &amp; contact</h2>
+          <p id="checkout-error" class="error" role="alert"></p>
+          <div class="form-grid form-grid--2">
+            <label><span>First name</span><input name="firstName" required autocomplete="given-name" /></label>
+            <label><span>Last name</span><input name="lastName" required autocomplete="family-name" /></label>
+            <label><span>Email</span><input name="email" type="email" required autocomplete="email" /></label>
+            <label><span>Phone</span><input name="phone" type="tel" autocomplete="tel" /></label>
+          </div>
+          <label style="margin-top: 0.85rem; display: block"
+            ><span>Street / building</span><input name="line1" required autocomplete="address-line1"
+          /></label>
+          <div class="form-grid form-grid--2" style="margin-top: 0.85rem">
+            <label><span>City</span><input name="city" required autocomplete="address-level2" /></label>
+            <label><span>Emirate</span><input name="emirate" required /></label>
+          </div>
+          <label style="margin-top: 0.85rem; display: block"
+            ><span>Promo code (optional)</span><input name="promoCode" placeholder="MASAARNA10" autocomplete="off"
+          /></label>
+          <label style="margin-top: 0.85rem; display: block"
+            ><span>Delivery notes (optional)</span><textarea name="notes" placeholder="Gate code, building name…"></textarea></label
+          >
+          <div class="checkout-actions">
+            <button type="submit" class="btn btn--primary" id="checkout-submit" style="width: 100%; padding: 0.85rem">
+              Place order · Cash on delivery
+            </button>
+            <button type="button" class="btn btn--ghost" id="checkout-pay-card" style="width: 100%; padding: 0.85rem; margin-top: 0.65rem">
+              Pay securely with card (Visa / Mastercard)
+            </button>
+          </div>
+          <p class="muted" style="margin-top: 0.75rem; font-size: 0.8rem">
+            Card payments use the hosted payment page. Configure <code>NGENIUS_API_KEY</code> and
+            <code>NGENIUS_OUTLET_ID</code> in server <code>.env</code>.
+          </p>
+        </form>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="site-footer__bottom" style="border-top: none">© Masaarna · Secure checkout</div>
+    </footer>
+
+    <nav class="mobile-tabbar" id="mobile-tabbar" aria-label="Quick links">
+      <a class="mobile-tabbar__btn" href="/">
+        <span class="mobile-tabbar__ico" aria-hidden="true">🏠</span>
+        <span class="mobile-tabbar__label">Home</span>
+      </a>
+      <button
+        type="button"
+        class="mobile-tabbar__btn"
+        id="mobile-tab-search"
+        aria-haspopup="dialog"
+        aria-controls="mobile-search-sheet"
+      >
+        <span class="mobile-tabbar__ico" aria-hidden="true">🔍</span>
+        <span class="mobile-tabbar__label">Search</span>
+      </button>
+      <button
+        type="button"
+        class="mobile-tabbar__btn"
+        id="mobile-tab-categories"
+        aria-haspopup="dialog"
+        aria-expanded="false"
+        aria-controls="mobile-category-sheet"
+      >
+        <span class="mobile-tabbar__ico" aria-hidden="true">☰</span>
+        <span class="mobile-tabbar__label">Categories</span>
+      </button>
+      <a class="mobile-tabbar__btn" href="#" id="mobile-nav-whatsapp" target="_blank" rel="noopener noreferrer">
+        <span class="mobile-tabbar__ico mobile-tabbar__ico--wa" aria-hidden="true"></span>
+        <span class="mobile-tabbar__label">WhatsApp</span>
+      </a>
+      <a
+        class="mobile-tabbar__btn mobile-tabbar__btn--cart mobile-tabbar__btn--active"
+        href="/checkout.html"
+        id="mobile-tab-checkout"
+        aria-current="page"
+      >
+        <span class="mobile-tabbar__ico" aria-hidden="true">🛒</span>
+        <span class="mobile-tabbar__label">Basket</span>
+        <span class="mobile-tabbar__badge" id="mobile-tabbar-cart-count" hidden>0</span>
+      </a>
+    </nav>
+
+    <div class="mobile-sheet" id="mobile-category-sheet" hidden>
+      <div class="mobile-sheet__backdrop" tabindex="-1"></div>
+      <div class="mobile-sheet__panel" role="dialog" aria-modal="true" aria-labelledby="mobile-cat-title">
+        <header class="mobile-sheet__header">
+          <h2 id="mobile-cat-title" class="mobile-sheet__title">Shop by category</h2>
+          <button type="button" class="mobile-sheet__close" id="mobile-sheet-close" aria-label="Close categories">×</button>
+        </header>
+        <div class="mobile-sheet__list" id="mobile-category-list"></div>
+      </div>
+    </div>
+
+    <script src="/js/site.js"></script>
+    <script src="/js/cart.js"></script>
+    <script src="/js/mobile-tabbar.js"></script>
+    <script src="/js/checkout.js"></script>
+  </body>
+</html>

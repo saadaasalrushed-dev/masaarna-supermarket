@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-labelledby="t">
+  <title id="t">Masaarna Supermarket  Trust &amp; Heritage</title>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f5f1e8"/>
+      <stop offset="100%" style="stop-color:#ebe4d6"/>
+    </linearGradient>
+  </defs>
+  <circle cx="60" cy="60" r="56" fill="url(#bg)" stroke="#5a6b46" stroke-width="3"/>
+  <text x="60" y="22" text-anchor="middle" fill="#5a6b46" font-family="Georgia, serif" font-size="6" font-weight="700" letter-spacing="0.15em">TRUST &amp; HERITAGE</text>
+  <g fill="none" stroke="#5a6b46" stroke-width="1.2" stroke-linecap="round">
+    <path d="M28 58c8-12 18-18 28-18M92 58c-8-12-18-18-28-18"/>
+    <ellipse cx="44" cy="52" rx="6" ry="10" transform="rotate(-25 44 52)"/>
+    <ellipse cx="76" cy="52" rx="6" ry="10" transform="rotate(25 76 52)"/>
+  </g>
+  <text x="60" y="68" text-anchor="middle" fill="#3d4a35" font-family="Georgia, serif" font-size="18" font-weight="700">Masaarna</text>
+  <text x="60" y="92" text-anchor="middle" fill="#5a6b46" font-family="Georgia, serif" font-size="7" font-weight="600" letter-spacing="0.12em">SUPER MARKET</text>
+</svg>

@@ -1,0 +1,22 @@
+# Render Blueprint — https://render.com/docs/blueprint-spec
+# Push this folder as a Git repo root (backend + frontend siblings) and connect Render.
+services:
+  - type: web
+    name: masaarna-supermarket
+    runtime: node
+    plan: free
+    rootDir: backend
+    buildCommand: npm ci
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        generateValue: true
+      - key: PUBLIC_BASE_URL
+        sync: false
+      - key: DB_PATH
+        value: ./masaarna.db
+      - key: UPLOAD_DIR
+        value: ./uploads

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Optional: set content="http://localhost:3000" if you open admin from another host/port -->
+    <meta name="api-base" content="" />
+    <title>Admin · Masaarna Supermarket</title>
+    <link rel="icon" href="/assets/brand/logo.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/css/brand.css" />
+    <link rel="stylesheet" href="/css/main.css" />
+    <link rel="stylesheet" href="/css/admin.css" />
+  </head>
+  <body>
+    <header class="page-header">
+      <div class="page-header__inner">
+        <a class="page-header__logo brand-display" href="/" style="display: flex; align-items: center; gap: 0.5rem">
+          <img src="/assets/brand/logo.svg" width="36" height="36" alt="" style="border-radius: 50%" />
+          Masaarna<span>.</span> Admin
+        </a>
+        <nav class="page-header__nav">
+          <a href="/">Storefront</a>
+        </nav>
+      </div>
+    </header>
+
+    <div class="admin-app">
+      <p id="file-protocol-banner" class="error" role="alert" style="display: none; margin-bottom: 1rem; padding: 0.75rem 1rem; border-radius: 8px; background: #fff3f0"></p>
+      <div id="login-box" class="admin-panel">
+        <h2 class="admin-title">Sign in</h2>
+        <p class="muted admin-login-hint">
+          Default account (first run): <code>admin</code> / <code>admin123</code> — change in production.
+        </p>
+        <form id="login-form" class="form-grid admin-login-form">
+          <p id="login-error" class="error" role="alert"></p>
+          <label><span>Username</span><input name="username" autocomplete="username" required /></label>
+          <label><span>Password</span><input name="password" type="password" autocomplete="current-password" required /></label>
+          <label style="grid-column: 1/-1">
+            <span>Backend URL (only if needed)</span>
+            <input type="url" id="login-api-base" name="api_base" placeholder="e.g. http://localhost:3000" autocomplete="off" />
+          </label>
+          <p class="muted" style="grid-column: 1/-1; font-size: 0.85rem; margin: 0">
+            Use this when you open this page from Live Server or another port. Leave empty if you use
+            <code>http://localhost:3000/admin.html</code> from the same Node server as the API.
+          </p>
+          <button type="submit" class="btn btn--primary">Sign in</button>
+        </form>
+      </div>
+
+      <div id="dash-box" class="admin-panel" style="display: none">
+        <div class="row-between">
+          <h2 class="admin-title">Dashboard</h2>
+          <button type="button" class="btn btn--ghost" id="logout-btn">Log out</button>
+        </div>
+        <p class="muted" id="admin-user"></p>
+        <p id="dash-error" class="error" role="alert"></p>
+
+        <nav class="admin-nav" id="admin-nav" aria-label="Admin sections">
+          <button type="button" class="is-active" data-tab="overview">Overview</button>
+          <button type="button" data-tab="orders">Orders</button>
+          <button type="button" data-tab="products">Products</button>
+          <button type="button" data-tab="categories">Categories</button>
+          <button type="button" data-tab="banners">Banners</button>
+          <button type="button" data-tab="storefront">Storefront</button>
+        </nav>
+
+        <section id="tab-overview" class="admin-tab is-visible" data-tab-panel>
+          <div class="stats" id="stats"></div>
+          <p class="admin-hint">
+            Tip: <strong>Products</strong> for catalog, <strong>Banners</strong> for the homepage carousel, <strong>Orders</strong> for delivery status.
+          </p>
+          <details class="admin-hint" style="margin-top: 1rem">
+            <summary>Backend API connection</summary>
+            <p class="muted" style="margin: 0.5rem 0">
+              Products and categories load from the same SQLite database as the storefront. If those tabs show “Not Found”, the browser is calling the wrong server — set the URL where
+              <code>node server.js</code> is running.
+            </p>
+            <p class="muted" style="margin: 0.5rem 0">
+              On <code>localhost</code>, this page auto-detects the API on ports <strong>3000–3015</strong> when this origin has no Masaarna <code>/api/health</code> (e.g. admin opened on 3003, API on 3000).
+            </p>
+            <div class="form-grid form-grid--2" style="align-items: end; gap: 0.75rem">
+              <label style="grid-column: 1/-1">
+                <span>API origin (no trailing slash)</span>
+                <input type="url" id="dash-api-base" placeholder="http://localhost:3000" autocomplete="off" />
+              </label>
+              <button type="button" class="btn btn--primary" id="btn-save-api-base">Save &amp; reload</button>
+            </div>
+            <p class="muted" id="api-base-status" style="font-size: 0.85rem; margin-top: 0.5rem"></p>
+          </details>
+        </section>
+
+        <section id="tab-orders" class="admin-tab" data-tab-panel>
+          <h3 class="admin-section-title">Orders</h3>
+          <p id="orders-msg" class="muted" role="status" style="min-height: 1.25rem"></p>
+          <div class="admin-table-wrap" id="orders-wrap"></div>
+        </section>
+
+        <section id="tab-products" class="admin-tab" data-tab-panel>
+          <h3 class="admin-section-title">Products</h3>
+          <div class="admin-toolbar">
+            <input type="search" id="product-filter" placeholder="Filter by name…" autocomplete="off" />
+            <button type="button" class="btn btn--primary" id="btn-new-product">Add product</button>
+          </div>
+          <p class="admin-hint">
+            List is loaded from the same SQLite DB as the shop. If you see “Not Found”, set <strong>Backend URL</strong> on the sign-in form or under Overview → Backend API connection. Use <strong>Edit</strong> on a row to change items.
+          </p>
+          <p id="products-msg" class="muted" role="status" style="min-height: 1.25rem"></p>
+          <div class="admin-table-wrap" id="products-wrap"></div>
+        </section>
+
+        <section id="tab-categories" class="admin-tab" data-tab-panel>
+          <h3 class="admin-section-title">Categories</h3>
+          <p class="admin-hint">Product “category” must match one of these slugs (e.g. <code>snacks</code>).</p>
+          <form id="category-new-form" class="form-grid form-grid--2" style="margin-bottom: 1rem">
+            <label><span>New slug</span><input name="slug" required placeholder="e.g. frozen" pattern="[a-z0-9-]+" /></label>
+            <label><span>Name</span><input name="name" required placeholder="Display name" /></label>
+            <label><span>Sort order</span><input name="sort_order" type="number" value="0" /></label>
+            <label style="grid-column: 1/-1"><span>Arabic name (optional)</span><input name="name_ar" /></label>
+            <button type="submit" class="btn btn--primary" style="grid-column: 1/-1">Add category</button>
+          </form>
+          <p id="categories-msg" class="muted" role="status" style="min-height: 1.25rem"></p>
+          <div class="admin-table-wrap" id="categories-wrap"></div>
+        </section>
+
+        <section id="tab-banners" class="admin-tab" data-tab-panel>
+          <h3 class="admin-section-title">Homepage banners</h3>
+          <p class="admin-hint">
+            Carousel under the hero on the storefront. Use wide images (e.g. 1200×400) or SVGs. Link can be
+            <code>/#shop</code> or any URL. Only <strong>active</strong> banners are shown on the site.
+          </p>
+          <form id="banner-new-form" class="form-grid form-grid--2" style="margin-bottom: 1rem">
+            <label><span>Title</span><input name="title" placeholder="Promotion headline" /></label>
+            <label><span>Image URL</span><input type="url" name="image_url" placeholder="/uploads/products/… or /assets/banners/…" /></label>
+            <label><span>Link URL</span><input type="text" name="link_url" placeholder="/#shop" /></label>
+            <label><span>Sort order</span><input name="sort_order" type="number" value="0" /></label>
+            <label style="display: flex; align-items: center; gap: 0.5rem">
+              <input type="checkbox" name="is_active" checked /> Active
+            </label>
+            <label style="grid-column: 1/-1">
+              <span>Or upload image (fills Image URL)</span>
+              <input type="file" id="banner-new-file" accept="image/jpeg,image/png,image/webp,image/gif" />
+            </label>
+            <button type="submit" class="btn btn--primary" style="grid-column: 1/-1">Add banner</button>
+          </form>
+          <p id="banners-msg" class="muted" role="status" style="min-height: 1.25rem"></p>
+          <div class="admin-table-wrap" id="banners-wrap"></div>
+        </section>
+
+        <section id="tab-storefront" class="admin-tab" data-tab-panel>
+          <h3 class="admin-section-title">Storefront &amp; social</h3>
+          <p class="admin-hint">Shown on the public site footer and <code>/api/site</code>. Paste TikTok / Google review URLs from your PDF.</p>
+          <form id="site-settings-form" class="form-grid form-grid--2">
+            <p id="settings-msg" class="muted" role="status" style="grid-column: 1/-1; min-height: 1.25rem"></p>
+            <label><span>Site name</span><input type="text" data-setting-key="site.name" autocomplete="organization" /></label>
+            <label><span>Tagline</span><input type="text" data-setting-key="site.tagline" /></label>
+            <label style="grid-column: 1/-1"><span>Logo URL</span><input type="url" data-setting-key="site.logo_url" placeholder="/assets/brand/logo.svg" /></label>
+            <label><span>WhatsApp</span><input type="url" data-setting-key="social.whatsapp" placeholder="https://wa.me/971..." /></label>
+            <label><span>Instagram</span><input type="url" data-setting-key="social.instagram" /></label>
+            <label><span>TikTok</span><input type="url" data-setting-key="social.tiktok" /></label>
+            <label><span>Google review</span><input type="url" data-setting-key="social.google_review" placeholder="https://g.page/..." /></label>
+            <label><span>Facebook</span><input type="url" data-setting-key="social.facebook" /></label>
+            <label><span>Phone</span><input type="text" data-setting-key="contact.phone" /></label>
+            <label><span>Email</span><input type="email" data-setting-key="contact.email" /></label>
+            <label style="grid-column: 1/-1"><span>Map embed URL (iframe)</span><input type="url" data-setting-key="contact.map_embed_url" /></label>
+            <label style="grid-column: 1/-1"><span>Map link (Google Maps)</span><input type="url" data-setting-key="contact.map_link_url" /></label>
+            <button type="submit" class="btn btn--primary" style="grid-column: 1/-1">Save storefront</button>
+          </form>
+        </section>
+
+        <div class="admin-actions">
+          <a class="btn btn--primary" href="/">Open storefront</a>
+        </div>
+        <p class="admin-back"><a href="/">← Back to store</a></p>
+      </div>
+    </div>
+
+    <div id="product-modal" class="admin-modal" hidden>
+      <div class="admin-modal__backdrop" data-close-modal></div>
+      <div class="admin-modal__panel">
+        <div class="admin-modal__head">
+          <h3 id="product-modal-title">Product</h3>
+          <button type="button" class="btn btn--ghost" data-close-modal>Close</button>
+        </div>
+        <form id="product-form" class="form-grid">
+          <input type="hidden" name="id" id="pf-id" value="" />
+          <label><span>SKU</span><input name="sku" id="pf-sku" required /></label>
+          <label><span>Name</span><input name="name" id="pf-name" required /></label>
+          <label><span>Brand</span><input name="brand" id="pf-brand" /></label>
+          <label style="grid-column: 1/-1"><span>Description</span><textarea name="description" id="pf-desc" rows="2"></textarea></label>
+          <label><span>Category</span>
+            <select name="category" id="pf-category" required>
+              <option value="">— Loading categories —</option>
+            </select>
+          </label>
+          <label><span>Price (AED)</span><input name="price" id="pf-price" type="number" step="0.01" min="0" required /></label>
+          <label><span>Original price</span><input name="original_price" id="pf-original" type="number" step="0.01" min="0" /></label>
+          <label><span>Stock</span><input name="stock" id="pf-stock" type="number" min="0" required /></label>
+          <label><span>Weight</span><input name="weight" id="pf-weight" placeholder="500g" /></label>
+          <label><span>Origin</span><input name="origin" id="pf-origin" /></label>
+          <label style="display: flex; align-items: center; gap: 0.5rem"
+            ><input type="checkbox" name="is_featured" id="pf-featured" /> Featured</label
+          >
+          <label style="display: flex; align-items: center; gap: 0.5rem"
+            ><input type="checkbox" name="is_bestseller" id="pf-bestseller" /> Bestseller</label
+          >
+          <label style="display: flex; align-items: center; gap: 0.5rem"
+            ><input type="checkbox" name="is_active" id="pf-active" checked /> Active on storefront</label
+          >
+          <div style="grid-column: 1/-1">
+            <p class="muted" style="margin: 0 0 0.35rem">Current images</p>
+            <div id="pf-images-current" class="pf-images-current" aria-live="polite"></div>
+            <label style="display: block; margin-top: 0.5rem">
+              <span>Add images (optional, multiple)</span>
+              <input
+                type="file"
+                name="images"
+                id="pf-images"
+                accept="image/jpeg,image/png,image/webp,image/gif"
+                multiple
+              />
+            </label>
+          </div>
+          <p id="product-form-msg" class="muted" style="grid-column: 1/-1"></p>
+          <button type="submit" class="btn btn--primary" style="grid-column: 1/-1">Save product</button>
+        </form>
+      </div>
+    </div>
+
+    <footer class="site-footer">
+      <div class="site-footer__bottom admin-footer-note">Masaarna · Admin</div>
+    </footer>
+
+    <script src="/js/admin.js"></script>
+  </body>
+</html>

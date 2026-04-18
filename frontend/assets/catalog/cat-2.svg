@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <rect width="400" height="400" fill="#fffbeb"/>
+  <circle cx="200" cy="160" r="72" fill="#fde68a"/>
+  <text x="200" y="175" text-anchor="middle" font-size="56"></text>
+  <text x="200" y="290" text-anchor="middle" font-family="system-ui,sans-serif" font-size="18" font-weight="700" fill="#334155">Arabic Coffee</text>
+  <text x="200" y="318" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" fill="#64748b">Masaarna demo</text>
+</svg>
