@@ -132,19 +132,31 @@ router.post('/categories', authenticateAdmin, async (req, res) => {
       .replace(/\s+/g, '-')
       .replace(/[^a-z0-9-]/g, '');
     if (!clean) return res.status(400).json({ error: 'Invalid slug' });
-    await db.runAsync(
-      `INSERT INTO categories (slug, name, name_ar, sort_order, is_active) VALUES (?,?,?,?,1)`,
-      clean,
-      String(name).trim(),
-      name_ar != null ? String(name_ar) : '',
-      parseInt(sort_order, 10) || 0
-    );
-    const { id } = await db.getAsync('SELECT last_insert_rowid() AS id');
-    const row = await db.getAsync('SELECT * FROM categories WHERE id = ?', id);
+    let row;
+    if (db.isPostgres) {
+      row = await db.getAsync(
+        `INSERT INTO categories (slug, name, name_ar, sort_order, is_active) VALUES (?,?,?,?,1) RETURNING *`,
+        clean,
+        String(name).trim(),
+        name_ar != null ? String(name_ar) : '',
+        parseInt(sort_order, 10) || 0
+      );
+    } else {
+      await db.runAsync(
+        `INSERT INTO categories (slug, name, name_ar, sort_order, is_active) VALUES (?,?,?,?,1)`,
+        clean,
+        String(name).trim(),
+        name_ar != null ? String(name_ar) : '',
+        parseInt(sort_order, 10) || 0
+      );
+      const { id } = await db.getAsync('SELECT last_insert_rowid() AS id');
+      row = await db.getAsync('SELECT * FROM categories WHERE id = ?', id);
+    }
     await logAudit(req.admin.id, 'create', 'category', id, null, row, req);
     res.status(201).json(row);
   } catch (e) {
-    if (e.message && e.message.includes('UNIQUE')) {
+    const dup = e.code === '23505' || (e.message && (/UNIQUE|duplicate key/i.test(e.message)));
+    if (dup) {
       return res.status(400).json({ error: 'That category slug already exists' });
     }
     res.status(500).json({ error: e.message });
@@ -238,16 +250,28 @@ router.get('/banners', authenticateAdmin, async (req, res) => {
 router.post('/banners', authenticateAdmin, async (req, res) => {
   try {
     const { title, image_url, link_url, sort_order, is_active } = req.body;
-    await db.runAsync(
-      `INSERT INTO banners (title, image_url, link_url, sort_order, is_active) VALUES (?,?,?,?,?)`,
-      title || null,
-      image_url || '',
-      link_url || '',
-      parseInt(sort_order, 10) || 0,
-      is_active === false || is_active === 0 ? 0 : 1
-    );
-    const { id } = await db.getAsync('SELECT last_insert_rowid() AS id');
-    const row = await db.getAsync('SELECT * FROM banners WHERE id = ?', id);
+    let row;
+    if (db.isPostgres) {
+      row = await db.getAsync(
+        `INSERT INTO banners (title, image_url, link_url, sort_order, is_active) VALUES (?,?,?,?,?) RETURNING *`,
+        title || null,
+        image_url || '',
+        link_url || '',
+        parseInt(sort_order, 10) || 0,
+        is_active === false || is_active === 0 ? 0 : 1
+      );
+    } else {
+      await db.runAsync(
+        `INSERT INTO banners (title, image_url, link_url, sort_order, is_active) VALUES (?,?,?,?,?)`,
+        title || null,
+        image_url || '',
+        link_url || '',
+        parseInt(sort_order, 10) || 0,
+        is_active === false || is_active === 0 ? 0 : 1
+      );
+      const { id } = await db.getAsync('SELECT last_insert_rowid() AS id');
+      row = await db.getAsync('SELECT * FROM banners WHERE id = ?', id);
+    }
     await logAudit(req.admin.id, 'create', 'banner', id, null, row, req);
     res.status(201).json(row);
   } catch (e) {

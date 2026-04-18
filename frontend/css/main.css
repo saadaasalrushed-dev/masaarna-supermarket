@@ -522,6 +522,47 @@ a:hover {
   flex-shrink: 0;
 }
 
+.product-card__wa {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: #25d366;
+  color: #fff;
+  flex-shrink: 0;
+  text-decoration: none;
+  transition: filter 0.15s ease, transform 0.15s ease;
+}
+
+.product-card__wa:hover {
+  filter: brightness(1.08);
+  color: #fff;
+}
+
+.product-card__wa-ico {
+  display: block;
+}
+
+.btn--wa {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  box-sizing: border-box;
+  background: #25d366;
+  color: #fff !important;
+  border: 1px solid #1fba59;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.btn--wa:hover {
+  filter: brightness(1.06);
+  color: #fff !important;
+}
+
 .btn--sm {
   padding: 0.38rem 0.65rem;
   font-size: 0.75rem;
