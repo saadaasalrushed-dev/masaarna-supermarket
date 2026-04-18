@@ -14,7 +14,13 @@ router.get('/site', async (_req, res) => {
       WHERE "key" LIKE 'site.%' OR "key" LIKE 'social.%' OR "key" LIKE 'contact.%'
     `);
     const flat = {};
-    for (const r of rows) flat[r.key] = r.value;
+    for (const r of rows) {
+      const k = r.key != null ? r.key : r.Key;
+      if (k) flat[k] = r.value != null ? r.value : r.Value;
+    }
+
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.set('Pragma', 'no-cache');
 
     res.json({
       siteName: flat['site.name'] || 'Masaarna Supermarket',

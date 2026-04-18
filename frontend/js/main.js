@@ -30,20 +30,33 @@
   let whatsappStoreUrl = '';
   let waConfigPromise = null;
 
+  function fetchWaFromApi() {
+    return fetch('/api/site', { cache: 'no-store', credentials: 'same-origin' })
+      .then((r) => (r.ok ? r.json() : {}))
+      .then((c) => {
+        whatsappStoreUrl = c.social && c.social.whatsapp ? String(c.social.whatsapp).trim() : '';
+      })
+      .catch(() => {
+        whatsappStoreUrl = '';
+      });
+  }
+
+  /** Deduplicate concurrent loads; do not cache forever — old code kept the seed wa.me URL and blocked admin updates. */
   function ensureWaConfig() {
-    if (whatsappStoreUrl) return Promise.resolve();
     if (!waConfigPromise) {
-      waConfigPromise = fetch('/api/site')
-        .then((r) => (r.ok ? r.json() : {}))
-        .then((c) => {
-          whatsappStoreUrl = (c.social && c.social.whatsapp) ? String(c.social.whatsapp).trim() : '';
-        })
-        .catch(() => {
-          whatsappStoreUrl = '';
-        });
+      waConfigPromise = fetchWaFromApi().finally(() => {
+        waConfigPromise = null;
+      });
     }
     return waConfigPromise;
   }
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+      whatsappStoreUrl = '';
+      waConfigPromise = null;
+    }
+  });
 
   function buildWhatsAppProductMessage(p) {
     const origin = typeof location !== 'undefined' ? location.origin : '';

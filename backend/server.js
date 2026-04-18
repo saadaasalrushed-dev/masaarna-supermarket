@@ -115,7 +115,18 @@ function startListening() {
     if (bootLogged) return;
     bootLogged = true;
     console.log(`\n🌐 http://localhost:${listenPort}  (storefront + /api)`);
-    console.log('   SQLite DB is created automatically on first run (no separate DB install).\n');
+    if (db.isPostgres) {
+      console.log('   PostgreSQL (DATABASE_URL): CMS/site settings persist across deploys.\n');
+    } else {
+      console.log('   SQLite: database file next to the server (good for local dev).');
+      if (process.env.RENDER || process.env.RENDER_EXTERNAL_URL) {
+        console.warn(
+          '   ⚠️  Render: add a PostgreSQL instance and set DATABASE_URL on this service, or admin changes (e.g. WhatsApp) reset on every deploy.\n'
+        );
+      } else {
+        console.log('');
+      }
+    }
   });
 }
 

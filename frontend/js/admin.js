@@ -222,7 +222,8 @@
     const rows = data.raw || data.settings || [];
     const map = {};
     rows.forEach((r) => {
-      map[r.key] = r.value;
+      const k = r.key != null ? r.key : r.Key;
+      if (k) map[k] = r.value != null ? r.value : r.Value;
     });
     form.querySelectorAll('[data-setting-key]').forEach((el) => {
       const k = el.getAttribute('data-setting-key');
