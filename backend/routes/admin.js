@@ -152,7 +152,7 @@ router.post('/categories', authenticateAdmin, async (req, res) => {
       const { id } = await db.getAsync('SELECT last_insert_rowid() AS id');
       row = await db.getAsync('SELECT * FROM categories WHERE id = ?', id);
     }
-    await logAudit(req.admin.id, 'create', 'category', id, null, row, req);
+    await logAudit(req.admin.id, 'create', 'category', row.id, null, row, req);
     res.status(201).json(row);
   } catch (e) {
     const dup = e.code === '23505' || (e.message && (/UNIQUE|duplicate key/i.test(e.message)));
@@ -227,19 +227,31 @@ router.get('/cms/summary', authenticateAdmin, async (req, res) => {
 });
 
 router.get('/settings', authenticateAdmin, async (req, res) => {
-  const rows = await db.allAsync('SELECT * FROM settings ORDER BY group_name, "key"');
-  res.json({ settings: rows, raw: rows });
+  try {
+    const rows = await db.allAsync('SELECT * FROM settings ORDER BY group_name, "key"');
+    res.json({ settings: rows, raw: rows });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
 });
 
 router.put('/settings', authenticateAdmin, async (req, res) => {
-  const body = req.body.settings || req.body;
-  if (typeof body === 'object' && !Array.isArray(body)) {
-    for (const [k, v] of Object.entries(body)) {
-      await db.runAsync('INSERT OR REPLACE INTO settings ("key", value, updated_at) VALUES (?,?,datetime(\'now\'))', k, String(v));
+  try {
+    const body = req.body.settings || req.body;
+    if (typeof body === 'object' && !Array.isArray(body)) {
+      for (const [k, v] of Object.entries(body)) {
+        await db.runAsync(
+          'INSERT OR REPLACE INTO settings ("key", value, updated_at) VALUES (?,?,datetime(\'now\'))',
+          k,
+          String(v)
+        );
+      }
     }
+    await logAudit(req.admin.id, 'update', 'settings', null, null, body, req);
+    res.json({ success: true });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
   }
-  await logAudit(req.admin.id, 'update', 'settings', null, null, body, req);
-  res.json({ success: true });
 });
 
 router.get('/banners', authenticateAdmin, async (req, res) => {
@@ -272,7 +284,7 @@ router.post('/banners', authenticateAdmin, async (req, res) => {
       const { id } = await db.getAsync('SELECT last_insert_rowid() AS id');
       row = await db.getAsync('SELECT * FROM banners WHERE id = ?', id);
     }
-    await logAudit(req.admin.id, 'create', 'banner', id, null, row, req);
+    await logAudit(req.admin.id, 'create', 'banner', row.id, null, row, req);
     res.status(201).json(row);
   } catch (e) {
     res.status(500).json({ error: e.message });

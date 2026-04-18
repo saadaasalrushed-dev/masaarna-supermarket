@@ -14,8 +14,13 @@ function buildPool() {
   const useSsl = process.env.PGSSLMODE !== 'disable' && !/localhost|127\.0\.0\.1/.test(conn || '');
   return new Pool({
     connectionString: conn,
-    max: 10,
-    ssl: useSsl ? { rejectUnauthorized: false } : false
+    max: parseInt(process.env.PG_POOL_MAX || '10', 10) || 10,
+    ssl: useSsl ? { rejectUnauthorized: false } : false,
+    connectionTimeoutMillis: Math.min(
+      30000,
+      parseInt(process.env.PG_CONN_TIMEOUT_MS || '20000', 10) || 20000
+    ),
+    idleTimeoutMillis: 30000
   });
 }
 
@@ -73,8 +78,15 @@ db.allAsync = async function (sql, ...args) {
 
 async function initPgSchema() {
   const sqlPath = path.join(__dirname, 'pg-schema.sql');
-  const sql = fs.readFileSync(sqlPath, 'utf8');
-  await pool.query(sql);
+  let sql = fs.readFileSync(sqlPath, 'utf8');
+  sql = sql.replace(/--[^\r\n]*/g, '');
+  const parts = sql
+    .split(';')
+    .map((s) => s.trim())
+    .filter((s) => s.length > 0);
+  for (const stmt of parts) {
+    await pool.query(stmt);
+  }
   console.log('✅ PostgreSQL schema ready');
 }
 
